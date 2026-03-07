@@ -44,6 +44,10 @@ Running the tool locally ensures maximum speed and allows you to use it offline.
     # Python 3
     python -m http.server 8000
     ```
+    Or, if you prefer with node
+    ```bash
+    npx serve .
+    ```
     Now visit `http://localhost:8000` in your browser.
 
 ---
@@ -67,5 +71,5 @@ Data privacy is a priority. This app uses the **FileReader API** and **URL.creat
 
 ## 👤 Author
 
-**[Abdur Rahim]**
+**Abdur Rahim**
 _Building essential, high-performance tools for the modern web._
