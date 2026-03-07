@@ -42,13 +42,13 @@ Running the tool locally ensures maximum speed and allows you to use it offline.
     Since this is a static webapp, you can use any local server. If you have Python installed, run:
     ```bash
     # Python 3
-    python -m http.server 8000
+    python -m http.server 3000
     ```
     Or, if you prefer with node
     ```bash
     npx serve .
     ```
-    Now visit `http://localhost:8000` in your browser.
+    Now visit `http://localhost:3000` in your browser.
 
 ---
 
