@@ -23,24 +23,23 @@
  * ────────────────────────────────────────────────────────────────────────────
  */
 
-const FORMSPREE_ID = 'myknyopy'; // ← Replace this!
+const FORMSPREE_ID = 'YOUR_FORM_ID'; // ← Replace this!
 
 // ─── DOM ─────────────────────────────────────────────────
-const banner = document.getElementById('emailBanner');
-const closeBannerBtn = document.getElementById('closeBanner');
-const openModalBtn = document.getElementById('openEmailModal');
-const backdrop = document.getElementById('modalBackdrop');
+const banner        = document.getElementById('emailBanner');
+const closeBannerBtn= document.getElementById('closeBanner');
+const openModalBtn  = document.getElementById('openEmailModal');
+const backdrop      = document.getElementById('modalBackdrop');
 const closeModalBtn = document.getElementById('closeModal');
-const closeSuccess = document.getElementById('closeSuccess');
-const submitBtn = document.getElementById('modalSubmit');
-const submitLabel = document.getElementById('submitLabel');
+const closeSuccess  = document.getElementById('closeSuccess');
+const submitBtn     = document.getElementById('modalSubmit');
+const submitLabel   = document.getElementById('submitLabel');
 const submitSpinner = document.getElementById('submitSpinner');
-const emailInput = document.getElementById('modalEmail');
-const nameInput = document.getElementById('modalName');
-const suggestionInput = document.getElementById('modalSuggestion')
-const modalDefault = document.getElementById('modalDefault');
-const modalSuccess = document.getElementById('modalSuccess');
-const modalError = document.getElementById('modalError');
+const emailInput    = document.getElementById('modalEmail');
+const nameInput     = document.getElementById('modalName');
+const modalDefault  = document.getElementById('modalDefault');
+const modalSuccess  = document.getElementById('modalSuccess');
+const modalError    = document.getElementById('modalError');
 
 // ─── Banner dismiss ───────────────────────────────────────
 closeBannerBtn.addEventListener('click', () => {
@@ -78,8 +77,7 @@ document.addEventListener('keydown', e => {
 // ─── Form submission ──────────────────────────────────────
 submitBtn.addEventListener('click', async () => {
   const email = emailInput.value.trim();
-  const name = nameInput.value.trim();
-  const suggestion = suggestionInput.value.trim()
+  const name  = nameInput.value.trim();
 
   // Validate
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -89,7 +87,7 @@ submitBtn.addEventListener('click', async () => {
   }
 
   if (FORMSPREE_ID === 'YOUR_FORM_ID') {
-    // showError('⚙️ Setup needed: open js/email-capture.js and replace YOUR_FORM_ID with your Formspree ID.');
+    showError('⚙️ Setup needed: open js/email-capture.js and replace YOUR_FORM_ID with your Formspree ID.');
     return;
   }
 
@@ -100,7 +98,7 @@ submitBtn.addEventListener('click', async () => {
     const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ email, name: name || 'Not provided', suggestion: suggestion || 'Not provided', _subject: 'B64 Studio' }),
+      body: JSON.stringify({ email, name: name || 'Not provided', _subject: 'New contact — B64 Studio' }),
     });
 
     const data = await res.json();
@@ -141,7 +139,7 @@ function resetModal() {
   modalSuccess.style.display = 'none';
   hideError();
   emailInput.value = '';
-  nameInput.value = '';
+  nameInput.value  = '';
 }
 
 function showError(msg) {
