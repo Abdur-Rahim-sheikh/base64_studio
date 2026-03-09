@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>B64 Studio — Base64 Media Decoder</title>
-  <meta name="description" content="Instantly decode Base64 strings and JSON payloads into images, videos, audio, and PDFs. No uploads, no hang-ups, 100% in-browser.">
+  <meta name="description"
+    content="Instantly decode Base64 strings and JSON payloads into images, videos, audio, and PDFs. No uploads, no hang-ups, 100% in-browser.">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23f0a500'/><text y='22' x='4' font-size='18' font-family='monospace' fill='black' font-weight='bold'>B6</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23f0a500'/><text y='22' x='4' font-size='18' font-family='monospace' fill='black' font-weight='bold'>B6</text></svg>">
 </head>
+
 <body>
 
   <!-- ─── Header ─────────────────────────────── -->
@@ -15,10 +19,10 @@
     <a class="logo" href="#">
       <div class="logo-icon">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <rect x="1" y="1" width="7" height="7" rx="2" fill="#000"/>
-          <rect x="10" y="1" width="7" height="7" rx="2" fill="#000" opacity=".6"/>
-          <rect x="1" y="10" width="7" height="7" rx="2" fill="#000" opacity=".6"/>
-          <rect x="10" y="10" width="7" height="7" rx="2" fill="#000" opacity=".3"/>
+          <rect x="1" y="1" width="7" height="7" rx="2" fill="#000" />
+          <rect x="10" y="1" width="7" height="7" rx="2" fill="#000" opacity=".6" />
+          <rect x="1" y="10" width="7" height="7" rx="2" fill="#000" opacity=".6" />
+          <rect x="10" y="10" width="7" height="7" rx="2" fill="#000" opacity=".3" />
         </svg>
       </div>
       <span class="logo-text">B64<span>Studio</span></span>
@@ -34,10 +38,10 @@
 
       <div class="panel-tabs">
         <button class="tab-btn active" data-tab="tabDrop">Decode</button>
-        <button class="tab-btn"        data-tab="tabJSON">JSON Tree</button>
-        <button class="tab-btn"        data-tab="tabRaw">Raw B64</button>
+        <button class="tab-btn" data-tab="tabJSON">JSON Tree</button>
+        <button class="tab-btn" data-tab="tabRaw">Raw B64</button>
         <button class="tab-btn tab-btn-encode" data-tab="tabEncode">⇅ Encode</button>
-        <button class="tab-btn"        data-tab="tabHistory">History</button>
+        <button class="tab-btn" data-tab="tabHistory">History</button>
       </div>
 
       <!-- TAB: Drop -->
@@ -50,7 +54,8 @@
             Or just press <kbd>Ctrl+V</kbd> to paste anywhere.
           </div>
           <div class="drop-or">or</div>
-          <button class="btn btn-primary btn-sm" onclick="document.getElementById('fileInput').click(); event.stopPropagation()">
+          <button class="btn btn-primary btn-sm"
+            onclick="document.getElementById('fileInput').click(); event.stopPropagation()">
             Browse file
           </button>
         </div>
@@ -62,8 +67,8 @@
         <div class="json-path-row">
           <div class="path-input-wrap">
             <span class="path-input-label">JSON Path</span>
-            <input class="path-input" id="pathInput" type="text"
-              placeholder="e.g. results[0] or data.items[0].b64" spellcheck="false">
+            <input class="path-input" id="pathInput" type="text" placeholder="e.g. results[0] or data.items[0].b64"
+              spellcheck="false">
           </div>
           <button class="btn btn-primary btn-sm" id="decodeBtn">Decode</button>
         </div>
@@ -71,7 +76,7 @@
           <div class="tree-empty">
             <div class="tree-empty-icon">🌿</div>
             <div>Paste or drop a <strong>JSON file</strong> to explore the tree.<br>
-            Base64 strings will be highlighted with a <strong>▶ decode</strong> chip.</div>
+              Base64 strings will be highlighted with a <strong>▶ decode</strong> chip.</div>
           </div>
         </div>
       </div>
@@ -79,10 +84,11 @@
       <!-- TAB: Raw B64 -->
       <div class="tab-panel" id="tabRaw">
         <div class="raw-tab-content">
-          <textarea id="rawTextarea" placeholder="Paste raw Base64 here…&#10;&#10;Supports:&#10;• Plain base64 strings&#10;• data:image/png;base64,... URIs&#10;• Strings with whitespace / line breaks"></textarea>
+          <textarea id="rawTextarea"
+            placeholder="Paste raw Base64 here…&#10;&#10;Supports:&#10;• Plain base64 strings&#10;• data:image/png;base64,... URIs&#10;• Strings with whitespace / line breaks"></textarea>
           <button class="btn btn-primary" id="decodeRawBtn">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M3 7L6 10L11 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 7L6 10L11 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
             </svg>
             Decode Base64
           </button>
@@ -127,7 +133,8 @@
 
             <div class="encode-output-wrap">
               <div class="encode-output-header">
-                <span class="encode-output-label">Base64 output <span class="encode-clipped-note" id="encodeClippedNote" style="display:none">— display clipped, copy gets full string</span></span>
+                <span class="encode-output-label">Base64 output <span class="encode-clipped-note" id="encodeClippedNote"
+                    style="display:none">— display clipped, copy gets full string</span></span>
                 <span class="encode-char-count" id="encodeCharCount"></span>
               </div>
               <div class="encode-output-box">
@@ -140,19 +147,21 @@
             <div class="encode-copy-bar">
               <button class="btn btn-primary encode-copy-main" id="encodeCopyBtn">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <rect x="4" y="1" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.6"/>
-                  <path d="M1 5v7a1 1 0 001 1h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  <rect x="4" y="1" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.6" />
+                  <path d="M1 5v7a1 1 0 001 1h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
                 </svg>
                 <span id="copyBtnLabel">Copy full string</span>
               </button>
               <button class="btn btn-ghost encode-save-btn" id="encodeSaveBtn" title="Save as .txt file">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M7 1v9M4 7l3 3 3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M1 11.5h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M7 1v9M4 7l3 3 3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                  <path d="M1 11.5h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
                 </svg>
                 .txt
               </button>
-              <button class="btn btn-ghost btn-sm" id="encodeResetBtn" title="Encode another file" style="padding:0 10px">↺</button>
+              <button class="btn btn-ghost btn-sm" id="encodeResetBtn" title="Encode another file"
+                style="padding:0 10px">↺</button>
             </div>
 
           </div>
@@ -173,14 +182,15 @@
         <div class="preview-actions">
           <button class="btn btn-icon" id="copyUrlBtn" title="Copy blob URL" style="display:none">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <rect x="4" y="1" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M1 5v7a1 1 0 001 1h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <rect x="4" y="1" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5" />
+              <path d="M1 5v7a1 1 0 001 1h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
           <a class="btn btn-green btn-sm" id="downloadBtn" href="#" style="display:none">
             <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-              <path d="M6.5 1v8M3.5 6.5l3 3 3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M1 10.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M6.5 1v8M3.5 6.5l3 3 3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M1 10.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
             </svg>
             Download
           </a>
@@ -201,7 +211,8 @@
             <div class="es-box">💾</div>
           </div>
           <h2>Drop, paste, or explore JSON</h2>
-          <p>Base64 strings decode instantly — images, videos, audio, PDFs and more. Even huge files won't hang your browser.</p>
+          <p>Base64 strings decode instantly — images, videos, audio, PDFs and more. Even huge files won't hang your
+            browser.</p>
         </div>
 
         <!-- Loading state -->
@@ -211,7 +222,7 @@
         </div>
 
         <!-- Media elements -->
-        <img   id="previewImage" class="preview-image" alt="Decoded image">
+        <img id="previewImage" class="preview-image" alt="Decoded image">
         <video id="previewVideo" class="preview-video" controls playsinline></video>
 
         <div class="preview-audio" id="previewAudio" style="display:none">
@@ -264,12 +275,15 @@
       <div class="email-banner-left">
         <span class="email-banner-emoji">✦</span>
         <div>
-          <div class="email-banner-title">Stay in the loop</div>
-          <div class="email-banner-sub">Get notified when new features drop. No spam, ever.</div>
+          <div class="email-banner-title">What should I build next?</div>
+          <div class="email-banner-sub">I built this because other converters crash on large files or ignore JSON
+            schemas.
+            <strong>What's the next tool you need?</strong>
+          </div>
         </div>
       </div>
       <div class="email-banner-right">
-        <button class="btn btn-primary btn-sm" id="openEmailModal">Join the network</button>
+        <button class="btn btn-primary btn-sm" id="openEmailModal">Share an idea</button>
         <button class="btn-close-banner" id="closeBanner" aria-label="Dismiss">✕</button>
       </div>
     </div>
@@ -284,49 +298,39 @@
       <!-- Default state -->
       <div id="modalDefault">
         <div class="modal-icon">✦</div>
-        <h2 class="modal-title" id="modalTitle">Join the network</h2>
+        <h2 class="modal-title" id="modalTitle">Let's build something useful</h2>
         <p class="modal-desc">
-          Drop your email and I'll reach out as the community grows.
-          No newsletters. No drip campaigns. Just real contact.
+          I'm building a suite of essential tools for developers and creators.
+          Drop your email and tell me what technical headache I can solve for you next.
+          <strong>No newsletters. Just a personal note when the feature is ready.</strong>
         </p>
 
         <div class="modal-form">
           <div class="modal-input-wrap">
-            <input
-              type="text"
-              id="modalName"
-              class="modal-input"
-              placeholder="Your name (optional)"
-              autocomplete="name"
-            >
+            <input type="text" id="modalName" class="modal-input" placeholder="Your name" autocomplete="name">
           </div>
           <div class="modal-input-wrap">
-            <input
-              type="email"
-              id="modalEmail"
-              class="modal-input"
-              placeholder="your@email.com"
-              autocomplete="email"
-              required
-            >
+            <input type="email" id="modalEmail" class="modal-input" placeholder="your@email.com" autocomplete="email"
+              required>
             <span class="modal-input-icon">@</span>
           </div>
+          <div class="modal-textarea-wrap" style="margin-top: 12px;">
+            <textarea id="modalSuggestion" class="modal-input" placeholder="Example: 'I wonder...'" rows="4"
+              style="resize: vertical; padding: 12px; height: auto; font-family: inherit; line-height: 1.5;"></textarea>
+          </div>
           <button class="btn btn-primary modal-submit" id="modalSubmit">
-            <span id="submitLabel">Send my email</span>
+            <span id="submitLabel">Send my suggestion</span>
             <div class="btn-spinner" id="submitSpinner" style="display:none"></div>
           </button>
         </div>
-
-        <p class="modal-privacy">
-          🔒 Powered by <strong>Formspree</strong>. Your email is only seen by the site owner.
-        </p>
       </div>
 
       <!-- Success state -->
       <div id="modalSuccess" style="display:none; text-align:center;">
         <div class="modal-success-icon">✓</div>
-        <h2 class="modal-title">You're in!</h2>
-        <p class="modal-desc">Thanks for joining. I'll be in touch personally when the time is right.</p>
+        <h2 class="modal-title">Got it!</h2>
+        <p class="modal-desc">Thanks for the input. I actually read these personally. I'll reach out when I have
+          something cool to show you.</p>
         <button class="btn btn-ghost modal-submit" id="closeSuccess">Close</button>
       </div>
 
@@ -340,4 +344,5 @@
   <script type="module" src="js/encoder.js"></script>
   <script type="module" src="js/email-capture.js"></script>
 </body>
+
 </html>

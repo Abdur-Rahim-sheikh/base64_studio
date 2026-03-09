@@ -1,52 +1,44 @@
-/**
- * encoder.js — Media → Base64 conversion module
- *
- * Handles the Encode tab: drop/select any file, convert to base64,
- * display in multiple output formats, copy to clipboard or save as .txt.
- * Also updates the right panel with a live preview of the encoded file.
- */
-
 import { formatBytes } from './decoder.js';
 
-// ─── DOM ──────────────────────────────────────────────────
-const encodeDropZone   = document.getElementById('encodeDropZone');
-const encodeFileBtn    = document.getElementById('encodeFileBtn');
-const encodeFileInput  = document.getElementById('encodeFileInput');
-const encodeOptions    = document.getElementById('encodeOptions');
-const encodeFileInfo   = document.getElementById('encodeFileInfo');
+//  DOM ─
+const encodeDropZone = document.getElementById('encodeDropZone');
+const encodeFileBtn = document.getElementById('encodeFileBtn');
+const encodeFileInput = document.getElementById('encodeFileInput');
+const encodeOptions = document.getElementById('encodeOptions');
+const encodeFileInfo = document.getElementById('encodeFileInfo');
 const encodeFormatTabs = document.getElementById('encodeFormatTabs');
-const encodeOutput     = document.getElementById('encodeOutput');
-const encodeOutputStats= document.getElementById('encodeOutputStats');
-const encodeCopyBtn    = document.getElementById('encodeCopyBtn');
-const encodeSaveBtn    = document.getElementById('encodeSaveBtn');
-const encodeResetBtn   = document.getElementById('encodeResetBtn');
+const encodeOutput = document.getElementById('encodeOutput');
+const encodeOutputStats = document.getElementById('encodeOutputStats');
+const encodeCopyBtn = document.getElementById('encodeCopyBtn');
+const encodeSaveBtn = document.getElementById('encodeSaveBtn');
+const encodeResetBtn = document.getElementById('encodeResetBtn');
 
 // Right panel refs
-const encodeResultPanel= document.getElementById('encodeResultPanel');
-const erpPreview       = document.getElementById('erpPreview');
-const erpFilename      = document.getElementById('erpFilename');
-const erpStats         = document.getElementById('erpStats');
-const emptyState       = document.getElementById('emptyState');
-const loadingState     = document.getElementById('loadingState');
-const loadingLabel     = document.getElementById('loadingLabel');
-const previewToolbar   = document.getElementById('previewToolbar');
-const mediaTypeBadge   = document.getElementById('mediaTypeBadge');
-const previewFilename  = document.getElementById('previewFilename');
-const downloadBtn      = document.getElementById('downloadBtn');
-const copyUrlBtn       = document.getElementById('copyUrlBtn');
-const statSize         = document.getElementById('statSize');
-const statType         = document.getElementById('statType');
-const statResolution   = document.getElementById('statResolution');
+const encodeResultPanel = document.getElementById('encodeResultPanel');
+const erpPreview = document.getElementById('erpPreview');
+const erpFilename = document.getElementById('erpFilename');
+const erpStats = document.getElementById('erpStats');
+const emptyState = document.getElementById('emptyState');
+const loadingState = document.getElementById('loadingState');
+const loadingLabel = document.getElementById('loadingLabel');
+const previewToolbar = document.getElementById('previewToolbar');
+const mediaTypeBadge = document.getElementById('mediaTypeBadge');
+const previewFilename = document.getElementById('previewFilename');
+const downloadBtn = document.getElementById('downloadBtn');
+const copyUrlBtn = document.getElementById('copyUrlBtn');
+const statSize = document.getElementById('statSize');
+const statType = document.getElementById('statType');
+const statResolution = document.getElementById('statResolution');
 
-// ─── State ────────────────────────────────────────────────
-let rawBase64   = '';   // pure base64 string, no prefix
-let fileMime    = '';
-let fileName    = '';
-let fileSize    = 0;
-let objectURL   = null;
-let activeFmt   = 'raw';
+//  State
+let rawBase64 = '';   // pure base64 string, no prefix
+let fileMime = '';
+let fileName = '';
+let fileSize = 0;
+let objectURL = null;
+let activeFmt = 'raw';
 
-// ─── Drop / File input ────────────────────────────────────
+//  Drop / File input 
 encodeFileBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   encodeFileInput.click();
@@ -72,7 +64,7 @@ encodeFileInput.addEventListener('change', e => {
   encodeFileInput.value = '';
 });
 
-// ─── Core encode ─────────────────────────────────────────
+//  Core encode 
 function encodeFile(file) {
   fileName = file.name;
   fileMime = file.type || guessMime(file.name);
@@ -102,7 +94,7 @@ function encodeFile(file) {
   reader.readAsDataURL(file);
 }
 
-// ─── Output formats ───────────────────────────────────────
+//  Output formats 
 function getFormattedOutput(fmt) {
   switch (fmt) {
     case 'raw':
@@ -131,22 +123,22 @@ function buildOutput() {
 
   // Show/hide clipped note and update char count
   const clippedNote = document.getElementById('encodeClippedNote');
-  const charCount   = document.getElementById('encodeCharCount');
-  const copyLabel   = document.getElementById('copyBtnLabel');
+  const charCount = document.getElementById('encodeCharCount');
+  const copyLabel = document.getElementById('copyBtnLabel');
 
   if (clippedNote) clippedNote.style.display = isClipped ? 'inline' : 'none';
 
   const totalChars = output.length;
-  const friendly   = totalChars >= 1_000_000
+  const friendly = totalChars >= 1_000_000
     ? (totalChars / 1_000_000).toFixed(2) + 'M chars'
     : totalChars >= 1_000
-    ? (totalChars / 1_000).toFixed(1) + 'K chars'
-    : totalChars + ' chars';
+      ? (totalChars / 1_000).toFixed(1) + 'K chars'
+      : totalChars + ' chars';
 
   if (charCount) charCount.textContent = friendly;
   if (copyLabel) copyLabel.textContent = `Copy${isClipped ? ' full' : ''} string · ${friendly}`;
 
-  const b64Len  = rawBase64.length;
+  const b64Len = rawBase64.length;
   const overhead = (((output.length / fileSize) - 1) * 100).toFixed(0);
 
   encodeOutputStats.innerHTML =
@@ -158,11 +150,11 @@ function buildOutput() {
 
 function formatBase64Length(len) {
   if (len >= 1_000_000) return (len / 1_000_000).toFixed(1) + 'M';
-  if (len >= 1_000)     return (len / 1_000).toFixed(1) + 'K';
+  if (len >= 1_000) return (len / 1_000).toFixed(1) + 'K';
   return String(len);
 }
 
-// ─── Format tab switching ─────────────────────────────────
+//  Format tab switching 
 encodeFormatTabs.addEventListener('click', e => {
   const btn = e.target.closest('.encode-fmt-btn');
   if (!btn || !rawBase64) return;
@@ -172,7 +164,7 @@ encodeFormatTabs.addEventListener('click', e => {
   buildOutput();
 });
 
-// ─── Copy ─────────────────────────────────────────────────
+//  Copy 
 encodeCopyBtn.addEventListener('click', async () => {
   if (!rawBase64) return;
   const full = getFormattedOutput(activeFmt);
@@ -191,30 +183,30 @@ encodeCopyBtn.addEventListener('click', async () => {
   }
 });
 
-// ─── Save as .txt ─────────────────────────────────────────
+//  Save as .txt 
 encodeSaveBtn.addEventListener('click', () => {
   if (!rawBase64) return;
   const full = getFormattedOutput(activeFmt);
   const blob = new Blob([full], { type: 'text/plain' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
   a.download = fileName.replace(/\.[^.]+$/, '') + '_base64.txt';
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 5000);
   showToast('Saved as .txt', 'success');
 });
 
-// ─── Reset ────────────────────────────────────────────────
+//  Reset
 encodeResetBtn.addEventListener('click', resetEncode);
 
 function resetEncode() {
   rawBase64 = '';
-  fileMime  = '';
-  fileName  = '';
-  fileSize  = 0;
+  fileMime = '';
+  fileName = '';
+  fileSize = 0;
   if (objectURL) { URL.revokeObjectURL(objectURL); objectURL = null; }
-  encodeOptions.style.display  = 'none';
+  encodeOptions.style.display = 'none';
   encodeDropZone.style.display = 'flex';
   encodeOutput.value = '';
 
@@ -222,21 +214,21 @@ function resetEncode() {
   encodeResultPanel.style.display = 'none';
   emptyState.style.display = 'flex';
   previewToolbar.style.opacity = '1';
-  downloadBtn.style.display  = 'none';
-  copyUrlBtn.style.display   = 'none';
+  downloadBtn.style.display = 'none';
+  copyUrlBtn.style.display = 'none';
   mediaTypeBadge.textContent = 'PREVIEW';
-  mediaTypeBadge.className   = 'media-type-badge';
-  previewFilename.textContent= '—';
-  statSize.textContent       = '—';
-  statType.textContent       = '—';
+  mediaTypeBadge.className = 'media-type-badge';
+  previewFilename.textContent = '—';
+  statSize.textContent = '—';
+  statType.textContent = '—';
   statResolution.textContent = '—';
 }
 
-// ─── UI helpers ───────────────────────────────────────────
+//  UI helpers ──
 function showEncodeUI(file) {
   hideEncodeLoading();
   encodeDropZone.style.display = 'none';
-  encodeOptions.style.display  = 'flex';
+  encodeOptions.style.display = 'flex';
 
   const ext = fileName.split('.').pop().toUpperCase();
   encodeFileInfo.innerHTML =
@@ -248,21 +240,21 @@ function showEncodeUI(file) {
 }
 
 function showEncodeLoading() {
-  emptyState.style.display    = 'none';
-  loadingState.style.display  = 'flex';
-  loadingLabel.textContent    = 'Encoding file…';
+  emptyState.style.display = 'none';
+  loadingState.style.display = 'flex';
+  loadingLabel.textContent = 'Encoding file…';
   previewToolbar.style.opacity = '0.4';
 }
 
 function hideEncodeLoading() {
-  loadingState.style.display  = 'none';
+  loadingState.style.display = 'none';
   previewToolbar.style.opacity = '1';
 }
 
-// ─── Right panel update ───────────────────────────────────
+//  Right panel update 
 function updateRightPanel(file) {
   // Hide decode previews
-  ['previewImage','previewVideo','previewAudio','previewPDF','previewText'].forEach(id => {
+  ['previewImage', 'previewVideo', 'previewAudio', 'previewPDF', 'previewText'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -315,14 +307,14 @@ function updateRightPanel(file) {
   // Update toolbar
   const label = fileMime.split('/')[1]?.split('+')[0]?.toUpperCase() || 'FILE';
   mediaTypeBadge.textContent = label;
-  mediaTypeBadge.className   = 'media-type-badge ' + category;
+  mediaTypeBadge.className = 'media-type-badge ' + category;
   previewFilename.textContent = fileName;
 
   // Download original
-  downloadBtn.href     = objectURL;
+  downloadBtn.href = objectURL;
   downloadBtn.download = fileName;
   downloadBtn.style.display = 'inline-flex';
-  copyUrlBtn.style.display  = 'none';
+  copyUrlBtn.style.display = 'none';
 
   // Stats bar
   statSize.textContent = formatBytes(fileSize);
@@ -338,20 +330,20 @@ function updateRightPanel(file) {
   }
 }
 
-// ─── MIME guesser for files without type ──────────────────
+//  MIME guesser for files without type 
 function guessMime(name) {
   const ext = name.split('.').pop().toLowerCase();
   const map = {
-    jpg:'image/jpeg', jpeg:'image/jpeg', png:'image/png', gif:'image/gif',
-    webp:'image/webp', bmp:'image/bmp', svg:'image/svg+xml', ico:'image/x-icon',
-    mp4:'video/mp4', webm:'video/webm', mov:'video/quicktime', avi:'video/x-msvideo',
-    mp3:'audio/mpeg', wav:'audio/wav', ogg:'audio/ogg', flac:'audio/flac', m4a:'audio/mp4',
-    pdf:'application/pdf', txt:'text/plain', json:'application/json',
+    jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif',
+    webp: 'image/webp', bmp: 'image/bmp', svg: 'image/svg+xml', ico: 'image/x-icon',
+    mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime', avi: 'video/x-msvideo',
+    mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg', flac: 'audio/flac', m4a: 'audio/mp4',
+    pdf: 'application/pdf', txt: 'text/plain', json: 'application/json',
   };
   return map[ext] || 'application/octet-stream';
 }
 
-// ─── Toast helper (mirrors app.js) ────────────────────────
+//  Toast helper (mirrors app.js) ─
 function showToast(msg, type = 'info') {
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div');
@@ -362,7 +354,7 @@ function showToast(msg, type = 'info') {
   setTimeout(() => toast.remove(), 3000);
 }
 
-// ─── Sync: reset encode right-panel when switching away ───
+//  Sync: reset encode right-panel when switching away 
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     if (btn.dataset.tab !== 'tabEncode' && rawBase64) {

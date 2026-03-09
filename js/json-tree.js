@@ -1,13 +1,7 @@
-/**
- * json-tree.js — Interactive JSON tree with base64 node detection
- */
-
 import { looksLikeBase64 } from './decoder.js';
 
-/**
- * Render a JSON value into an element with interactive nodes.
- * onSelectPath(path, value) is called when a b64 chip is clicked.
- */
+//  onSelectPath(path, value) is called when a b64 chip is clicked.
+
 export function renderTree(data, container, onSelectPath) {
   container.innerHTML = '';
   const root = buildNode(data, '', onSelectPath, 0);

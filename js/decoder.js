@@ -3,29 +3,26 @@
  */
 
 const SIGNATURES = [
-  { prefix: '/9j/',    mime: 'image/jpeg',       ext: 'jpg',  label: 'JPEG' },
-  { prefix: 'iVBOR',  mime: 'image/png',        ext: 'png',  label: 'PNG'  },
-  { prefix: 'R0lGO',  mime: 'image/gif',        ext: 'gif',  label: 'GIF'  },
-  { prefix: 'UklGR',  mime: 'image/webp',       ext: 'webp', label: 'WebP' },
-  { prefix: 'Qk0',    mime: 'image/bmp',        ext: 'bmp',  label: 'BMP'  },
-  { prefix: 'JVBERi', mime: 'application/pdf',  ext: 'pdf',  label: 'PDF'  },
-  { prefix: 'AAAAF',  mime: 'video/mp4',        ext: 'mp4',  label: 'MP4'  },
-  { prefix: 'AAAAI',  mime: 'video/mp4',        ext: 'mp4',  label: 'MP4'  },
-  { prefix: 'AAAAB',  mime: 'video/mp4',        ext: 'mp4',  label: 'MP4'  },
-  { prefix: 'GkXfo',  mime: 'video/webm',       ext: 'webm', label: 'WebM' },
-  { prefix: 'AAAA',   mime: 'video/mp4',        ext: 'mp4',  label: 'MP4'  },
-  { prefix: '//uQ',   mime: 'audio/mpeg',       ext: 'mp3',  label: 'MP3'  },
-  { prefix: '//sw',   mime: 'audio/mpeg',       ext: 'mp3',  label: 'MP3'  },
-  { prefix: 'SUQz',   mime: 'audio/mpeg',       ext: 'mp3',  label: 'MP3'  }, // ID3
-  { prefix: 'T2dn',   mime: 'audio/ogg',        ext: 'ogg',  label: 'OGG'  }, // OggS
-  { prefix: 'UklGR',  mime: 'audio/wav',        ext: 'wav',  label: 'WAV'  }, // RIFF (overlaps webp — checked by context)
-  { prefix: 'AAAA',   mime: 'video/mp4',        ext: 'mp4',  label: 'MP4'  },
+  { prefix: '/9j/', mime: 'image/jpeg', ext: 'jpg', label: 'JPEG' },
+  { prefix: 'iVBOR', mime: 'image/png', ext: 'png', label: 'PNG' },
+  { prefix: 'R0lGO', mime: 'image/gif', ext: 'gif', label: 'GIF' },
+  { prefix: 'UklGR', mime: 'image/webp', ext: 'webp', label: 'WebP' },
+  { prefix: 'Qk0', mime: 'image/bmp', ext: 'bmp', label: 'BMP' },
+  { prefix: 'JVBERi', mime: 'application/pdf', ext: 'pdf', label: 'PDF' },
+  { prefix: 'AAAAF', mime: 'video/mp4', ext: 'mp4', label: 'MP4' },
+  { prefix: 'AAAAI', mime: 'video/mp4', ext: 'mp4', label: 'MP4' },
+  { prefix: 'AAAAB', mime: 'video/mp4', ext: 'mp4', label: 'MP4' },
+  { prefix: 'GkXfo', mime: 'video/webm', ext: 'webm', label: 'WebM' },
+  { prefix: 'AAAA', mime: 'video/mp4', ext: 'mp4', label: 'MP4' },
+  { prefix: '//uQ', mime: 'audio/mpeg', ext: 'mp3', label: 'MP3' },
+  { prefix: '//sw', mime: 'audio/mpeg', ext: 'mp3', label: 'MP3' },
+  { prefix: 'SUQz', mime: 'audio/mpeg', ext: 'mp3', label: 'MP3' }, // ID3
+  { prefix: 'T2dn', mime: 'audio/ogg', ext: 'ogg', label: 'OGG' }, // OggS
+  { prefix: 'UklGR', mime: 'audio/wav', ext: 'wav', label: 'WAV' }, // RIFF (overlaps webp — checked by context)
+  { prefix: 'AAAA', mime: 'video/mp4', ext: 'mp4', label: 'MP4' },
 ];
 
-/**
- * Strips data URI prefix and whitespace from a base64 string.
- * Returns { clean, declaredMime } where declaredMime may be null.
- */
+
 export function stripBase64(raw) {
   let declaredMime = null;
   let clean = raw.trim();
@@ -37,16 +34,12 @@ export function stripBase64(raw) {
     clean = dataUriMatch[2];
   }
 
-  // Strip all whitespace
   clean = clean.replace(/\s/g, '');
 
   return { clean, declaredMime };
 }
 
-/**
- * Detect media type from base64 string signature.
- * Falls back to declared mime if given, or 'application/octet-stream'.
- */
+
 export function detectMime(clean, declaredMime) {
   for (const sig of SIGNATURES) {
     if (clean.startsWith(sig.prefix)) {
@@ -62,23 +55,17 @@ export function detectMime(clean, declaredMime) {
   return { mime: 'application/octet-stream', ext: 'bin', label: 'BINARY' };
 }
 
-/**
- * Get category for a mime type.
- */
+
 export function getCategory(mime) {
-  if (mime.startsWith('image/'))       return 'image';
-  if (mime.startsWith('video/'))       return 'video';
-  if (mime.startsWith('audio/'))       return 'audio';
-  if (mime === 'application/pdf')      return 'pdf';
-  if (mime.startsWith('text/'))        return 'text';
+  if (mime.startsWith('image/')) return 'image';
+  if (mime.startsWith('video/')) return 'video';
+  if (mime.startsWith('audio/')) return 'audio';
+  if (mime === 'application/pdf') return 'pdf';
+  if (mime.startsWith('text/')) return 'text';
   return 'binary';
 }
 
-/**
- * Decode a raw base64 string (with optional data URI prefix) to an object URL.
- * Uses the fetch trick for large files — keeps the main thread free.
- * Returns { url, blob, mime, ext, label, category, sizeBytes }
- */
+
 export async function decodeBase64(raw) {
   const { clean, declaredMime } = stripBase64(raw);
 
@@ -89,19 +76,17 @@ export async function decodeBase64(raw) {
   const { mime, ext, label } = detectMime(clean, declaredMime);
   const category = getCategory(mime);
 
-  // Use fetch + data URI for efficient conversion (avoids atob memory spikes)
+  // Using fetch + data URI for efficient conversion (avoids atob memory spikes)
   const response = await fetch(`data:${mime};base64,${clean}`);
   if (!response.ok) throw new Error('Failed to decode base64 data.');
 
   const blob = await response.blob();
-  const url  = URL.createObjectURL(blob);
+  const url = URL.createObjectURL(blob);
 
   return { url, blob, mime, ext, label, category, sizeBytes: blob.size };
 }
 
-/**
- * Format bytes to human-readable string.
- */
+
 export function formatBytes(bytes) {
   if (bytes === 0) return '0 B';
   const k = 1024;
@@ -110,9 +95,7 @@ export function formatBytes(bytes) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
-/**
- * Check if a string looks like base64 (heuristic).
- */
+
 export function looksLikeBase64(str) {
   if (!str || typeof str !== 'string') return false;
   const s = str.trim();

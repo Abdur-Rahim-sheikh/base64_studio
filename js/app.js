@@ -1,48 +1,44 @@
-/**
- * app.js — Main application orchestrator
- */
-
 import { decodeBase64, formatBytes, looksLikeBase64 } from './decoder.js';
 import { renderTree } from './json-tree.js';
 
-// ─── State ──────────────────────────────────────────────
+
 let currentObjectURL = null;
 let history = [];
 let parsedJSON = null;
 let activeHistoryIdx = -1;
 
 // ─── DOM Refs ────────────────────────────────────────────
-const dropZone       = document.getElementById('dropZone');
-const fileInput      = document.getElementById('fileInput');
-const pathInput      = document.getElementById('pathInput');
-const decodeBtn      = document.getElementById('decodeBtn');
-const rawTextarea    = document.getElementById('rawTextarea');
-const decodeRawBtn   = document.getElementById('decodeRawBtn');
-const treeWrap       = document.getElementById('treeWrap');
-const previewStage   = document.getElementById('previewStage');
-const emptyState     = document.getElementById('emptyState');
-const loadingState   = document.getElementById('loadingState');
-const loadingLabel   = document.getElementById('loadingLabel');
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const pathInput = document.getElementById('pathInput');
+const decodeBtn = document.getElementById('decodeBtn');
+const rawTextarea = document.getElementById('rawTextarea');
+const decodeRawBtn = document.getElementById('decodeRawBtn');
+const treeWrap = document.getElementById('treeWrap');
+const previewStage = document.getElementById('previewStage');
+const emptyState = document.getElementById('emptyState');
+const loadingState = document.getElementById('loadingState');
+const loadingLabel = document.getElementById('loadingLabel');
 const mediaTypeBadge = document.getElementById('mediaTypeBadge');
 const previewToolbar = document.getElementById('previewToolbar');
-const previewFilename= document.getElementById('previewFilename');
-const downloadBtn    = document.getElementById('downloadBtn');
-const copyUrlBtn     = document.getElementById('copyUrlBtn');
-const statSize       = document.getElementById('statSize');
-const statType       = document.getElementById('statType');
+const previewFilename = document.getElementById('previewFilename');
+const downloadBtn = document.getElementById('downloadBtn');
+const copyUrlBtn = document.getElementById('copyUrlBtn');
+const statSize = document.getElementById('statSize');
+const statType = document.getElementById('statType');
 const statResolution = document.getElementById('statResolution');
-const historyList    = document.getElementById('historyList');
-const tabBtns        = document.querySelectorAll('.tab-btn');
-const tabPanels      = document.querySelectorAll('.tab-panel');
+const historyList = document.getElementById('historyList');
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabPanels = document.querySelectorAll('.tab-panel');
 
-const previewImage   = document.getElementById('previewImage');
-const previewVideo   = document.getElementById('previewVideo');
-const previewAudio   = document.getElementById('previewAudio');
-const audioPlayer    = document.getElementById('audioPlayer');
-const previewPDF     = document.getElementById('previewPDF');
-const previewText    = document.getElementById('previewText');
+const previewImage = document.getElementById('previewImage');
+const previewVideo = document.getElementById('previewVideo');
+const previewAudio = document.getElementById('previewAudio');
+const audioPlayer = document.getElementById('audioPlayer');
+const previewPDF = document.getElementById('previewPDF');
+const previewText = document.getElementById('previewText');
 
-// ─── Tabs ────────────────────────────────────────────────
+// Tabs
 tabBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     tabBtns.forEach(b => b.classList.remove('active'));
@@ -52,7 +48,7 @@ tabBtns.forEach(btn => {
   });
 });
 
-// ─── Drop Zone ───────────────────────────────────────────
+// Drop Zone 
 dropZone.addEventListener('click', () => fileInput.click());
 
 dropZone.addEventListener('dragover', e => {
@@ -81,17 +77,17 @@ function readFile(file) {
   reader.readAsText(file);
 }
 
-// ─── Paste ───────────────────────────────────────────────
+// Paste
 window.addEventListener('paste', e => {
   const text = e.clipboardData.getData('text');
   if (text) handleInput(text);
 });
 
-// ─── Input Handler ───────────────────────────────────────
+// Input Handler
 function handleInput(raw) {
   const trimmed = raw.trim();
 
-  // Try JSON parse first
+
   try {
     parsedJSON = JSON.parse(trimmed);
     renderTree(parsedJSON, treeWrap, (path, value) => {
@@ -107,7 +103,7 @@ function handleInput(raw) {
     // Not JSON
   }
 
-  // Is it raw base64?
+  // Handling raw base64
   if (looksLikeBase64(trimmed)) {
     rawTextarea.value = trimmed;
     activateTab('tabRaw');
@@ -125,7 +121,7 @@ function activateTab(tabId) {
   document.getElementById(tabId).classList.add('active');
 }
 
-// ─── Manual path decode ───────────────────────────────────
+// Manual path decode
 decodeBtn.addEventListener('click', () => {
   if (!parsedJSON) { showToast('No JSON loaded yet', 'error'); return; }
   const path = pathInput.value.trim();
@@ -142,14 +138,14 @@ pathInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') decodeBtn.click();
 });
 
-// ─── Raw decode ───────────────────────────────────────────
+// Raw decode 
 decodeRawBtn.addEventListener('click', () => {
   const raw = rawTextarea.value.trim();
   if (!raw) { showToast('Paste a Base64 string above', 'error'); return; }
   triggerDecode(raw);
 });
 
-// ─── Core Decode ─────────────────────────────────────────
+// Core Decode 
 async function triggerDecode(base64str) {
   showLoading('Decoding…');
 
@@ -176,7 +172,7 @@ async function triggerDecode(base64str) {
   }
 }
 
-// ─── Display Result ───────────────────────────────────────
+// Display Result 
 function displayResult(result) {
   hideLoading();
   emptyState.style.display = 'none';
@@ -185,10 +181,10 @@ function displayResult(result) {
   mediaTypeBadge.className = 'media-type-badge ' + result.category;
   previewFilename.textContent = `decoded.${result.ext}`;
 
-  downloadBtn.href     = result.url;
+  downloadBtn.href = result.url;
   downloadBtn.download = `decoded.${result.ext}`;
   downloadBtn.style.display = 'inline-flex';
-  copyUrlBtn.style.display  = 'inline-flex';
+  copyUrlBtn.style.display = 'inline-flex';
 
   const { category, url, mime } = result;
 
@@ -201,14 +197,14 @@ function displayResult(result) {
   } else if (category === 'video') {
     previewVideo.src = url;
     previewVideo.style.display = 'block';
-    previewVideo.play().catch(() => {});
+    previewVideo.play().catch(() => { });
     previewVideo.onloadedmetadata = () => {
       statResolution.textContent = `${previewVideo.videoWidth}×${previewVideo.videoHeight}`;
     };
   } else if (category === 'audio') {
     previewAudio.style.display = 'block';
     audioPlayer.src = url;
-    audioPlayer.play().catch(() => {});
+    audioPlayer.play().catch(() => { });
     statResolution.textContent = '—';
   } else if (category === 'pdf') {
     previewPDF.src = url;
@@ -224,14 +220,14 @@ function displayResult(result) {
   }
 }
 
-// ─── Stats ────────────────────────────────────────────────
+// Stats 
 function updateStats(result) {
-  statSize.textContent  = formatBytes(result.sizeBytes);
-  statType.textContent  = result.mime;
+  statSize.textContent = formatBytes(result.sizeBytes);
+  statType.textContent = result.mime;
   statResolution.textContent = '…';
 }
 
-// ─── History ─────────────────────────────────────────────
+// History
 function addToHistory(result) {
   const entry = {
     ...result,
@@ -293,7 +289,7 @@ function renderHistory() {
   });
 }
 
-// ─── Copy URL ─────────────────────────────────────────────
+// Copy URL
 copyUrlBtn.addEventListener('click', async () => {
   if (!currentObjectURL) return;
   try {
@@ -304,7 +300,7 @@ copyUrlBtn.addEventListener('click', async () => {
   }
 });
 
-// ─── Helpers ─────────────────────────────────────────────
+// Helpers
 function getByPath(obj, path) {
   const parts = path.replace(/\[(\w+)\]/g, '.$1').split('.');
   return parts.reduce((acc, k) => (acc != null ? acc[k] : undefined), obj);
@@ -314,23 +310,23 @@ function hideAllPreviews() {
   previewImage.style.display = 'none';
   previewVideo.style.display = 'none';
   previewAudio.style.display = 'none';
-  previewPDF.style.display   = 'none';
-  previewText.style.display  = 'none';
+  previewPDF.style.display = 'none';
+  previewText.style.display = 'none';
   previewImage.src = '';
   previewVideo.src = '';
-  audioPlayer.src  = '';
-  previewPDF.src   = '';
+  audioPlayer.src = '';
+  previewPDF.src = '';
 }
 
 function showLoading(msg = 'Processing…') {
-  emptyState.style.display     = 'none';
-  loadingState.style.display   = 'flex';
-  loadingLabel.textContent     = msg;
+  emptyState.style.display = 'none';
+  loadingState.style.display = 'flex';
+  loadingLabel.textContent = msg;
   previewToolbar.style.opacity = '0.4';
 }
 
 function hideLoading() {
-  loadingState.style.display   = 'none';
+  loadingState.style.display = 'none';
   previewToolbar.style.opacity = '1';
 }
 
@@ -353,5 +349,5 @@ function showToast(msg, type = 'info') {
   setTimeout(() => toast.remove(), 3000);
 }
 
-// ─── Init ─────────────────────────────────────────────────
+// Init 
 renderHistory();
