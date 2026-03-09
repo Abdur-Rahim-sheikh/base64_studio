@@ -1,7 +1,7 @@
 // const FORMSPREE_ID = 'YOUR_FORM_ID' form fromspree website
 
 
-const FORMSPREE_ID = 'YOUR_FORM_ID'; // ← Replace this!
+const FORMSPREE_ID = 'myknyopy';
 
 // DOM 
 const banner = document.getElementById('emailBanner');
